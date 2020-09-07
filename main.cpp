@@ -21,33 +21,33 @@ void drawCloud(int x, int y, double _size)
                60 * _size + x, y + 65 * _size);
 }
 
-void drawPlane(int x)
+void drawPlane(int x, int y)
 {
     txSetColor(TX_BLACK, 4);
     txSetFillColor(TX_GRAY);
-    txEllipse(x - 85, 50, 220 + x,  80);
+    txEllipse(x - 85, y,     220 + x, y + 30);
 
     txSetFillColor(TX_BLUE);
-    txPie    (x - 85, 52,  10 + x, 80, 45, 135);
+    txPie    (x - 85, y + 2,  10 + x, y + 30, 45, 135);
 
     txSetFillColor(TX_GRAY);
     POINT wing1[4] = {
-        {35 + x,  70},
-        {60 + x,  70},
-        {90 + x, 150},
-        {65 + x, 150}
+        {35 + x, y +  20},
+        {60 + x, y +  20},
+        {90 + x, y + 100},
+        {65 + x, y + 100}
     };
     txPolygon (wing1, 4);
 
     //Верхнее крыло
-    txLine   ( 40 + x,  50,  80 + x,  10);
-    txLine   ( 80 + x,  10, 105 + x,  10);
-    txLine   (105 + x,  10,  65 + x,  50);
+    txLine   ( 40 + x,  y,       80 + x,  y - 40);
+    txLine   ( 80 + x,  y - 40, 105 + x,  y - 40);
+    txLine   (105 + x,  y - 40,  65 + x,  y);
 
     //Заднее крыло
-    txLine   (220 + x,  65, 240 + x,  20);
-    txLine   (190 + x,  20, 240 + x,  20);
-    txLine   (190 + x,  20, 165 + x,  50);
+    txLine   (220 + x,  y + 15, 240 + x,  y - 30);
+    txLine   (190 + x,  y - 30, 240 + x,  y - 30);
+    txLine   (190 + x,  y - 30, 165 + x,  y);
 }
 
 void drawHuman(int x, int y, int xLeftLeg, int xRightLeg)
@@ -108,19 +108,100 @@ int main()
 {
     txCreateWindow (1200, 700);
 
-    drawBackground();
-    drawCloud(200, 150, 1.2);
-    drawCloud(500, 100, 0.8);
-    drawCloud(900, 140, 1);
+    int planeX = 1200;
+    int planeY = 50;
+    int cloud1X = 600;
+    int cloud2X = 1200;
+    int cloud3X = 1800;
 
-    drawPlane(500);
-    drawHouse();
-    drawHuman(800, 400, 793, 808);
-    drawHuman(900, 400, 886, 920);
+    //Самолет летит
+    while (planeX > 500)
+    {
+        txBegin();
+        drawBackground();
 
-    drawTree(600, 300, RGB(80, 255, 64));
-    drawTree(760, 320, RGB(120, 255, 34));
-    drawTree(700, 320, RGB(120, 255, 34));
+        drawCloud(cloud1X, 150, 1.2);
+        drawCloud(cloud2X, 100, 0.8);
+        drawCloud(cloud3X, 140, 1);
+        drawHouse();
+
+        drawTree(600, 300, RGB(80, 255, 64));
+        drawTree(790, 320, RGB(120, 255, 34));
+        drawTree(700, 320, RGB(120, 255, 34));
+
+
+        drawPlane(planeX, planeY);
+        //drawHuman(800, 400, 793, 808);
+        //drawHuman(900, 400, 886, 920);
+
+
+        txSleep(50);
+        planeX = planeX - 5;
+        cloud1X = cloud1X - 2;
+        cloud2X -= 3;
+        cloud3X -= 2;
+        txEnd();
+    }
+
+
+    //Самолет снижается
+    while (planeX > -400)
+    {
+        txBegin();
+        drawBackground();
+
+        drawCloud(cloud1X, 150, 1.2);
+        drawCloud(cloud2X, 100, 0.8);
+        drawCloud(cloud3X, 140, 1);
+        drawHouse();
+
+        drawTree(600, 300, RGB(80, 255, 64));
+        drawTree(790, 320, RGB(120, 255, 34));
+        drawTree(700, 320, RGB(120, 255, 34));
+
+
+        drawPlane(planeX, planeY);
+
+
+        txSleep(50);
+        planeX = planeX - 5;
+        planeY = planeY + 2;
+        cloud1X = cloud1X - 2;
+        cloud2X -= 3;
+        cloud3X -= 2;
+        txEnd();
+    }
+
+    int humanX = 1200;
+
+    //Человек идет
+    while (humanX > 300)
+    {
+        txBegin();
+        drawBackground();
+
+        drawCloud(cloud1X, 150, 1.2);
+        drawCloud(cloud2X, 100, 0.8);
+        drawCloud(cloud3X, 140, 1);
+        drawHouse();
+
+        drawTree(600, 300, RGB(80, 255, 64));
+        drawTree(790, 320, RGB(120, 255, 34));
+        drawTree(700, 320, RGB(120, 255, 34));
+
+
+        drawPlane(planeX, planeY);
+        drawHuman(humanX, 400, humanX - 10, humanX + 10);
+
+
+        txSleep(50);
+        humanX = humanX - 5;
+        cloud1X = cloud1X - 2;
+        cloud2X -= 3;
+        cloud3X -= 2;
+        txEnd();
+    }
+
 
     return 0;
 }
