@@ -63,7 +63,7 @@ void drawHuman(int x, int y, int xKolena, int xLeftLeg, int xRightLeg)
     txLine  (x      , y +  65, xRightLeg, y + 130);
 }
 
-void drawHouse()
+void drawHouse(int doorLeft, int doorTop)
 {
     txSetFillColor(TX_RED);
     txSetColor(TX_BLACK, 5);
@@ -76,16 +76,26 @@ void drawHouse()
 
     txSetFillColor(TX_YELLOW);
     txRectangle( 60, 320, 340, 520);
+
     //Door
+    txSetFillColor(TX_BLACK);
+    txRectangle(230, 370, 300, 520);
     txSetFillColor(RGB(90, 56, 37));
-    txRectangle(230, 400, 300, 520);
+    POINT door[4] = {
+        {doorLeft, doorTop},
+        {doorLeft, doorTop + 150},
+        {300, 520},
+        {300, 370}
+    };
+    txPolygon (door, 4);
+
+    txCircle   (doorLeft  +10, doorTop + 60, 8);
+
     //Window
     txSetFillColor(RGB(185, 255, 255));
     txRectangle( 80, 360, 200, 450);
     txLine     (140, 360, 140, 450);
     txLine     (140, 400, 200, 400);
-
-    txDrawText (230, 400, 300, 520, "Лох");
 }
 
 void drawTree(int x, int y, COLORREF color)
@@ -122,7 +132,7 @@ void drawBackgroundScene1(int cloud1X, int cloud2X, int cloud3X)
     drawCloud(cloud2X, 100, 0.8);
     drawCloud(cloud3X, 140, 1);
 
-    drawHouse();
+    drawHouse(230, 370);
     drawTree(600, 300, RGB(80, 255, 64));
     drawTree(790, 320, RGB(120, 255, 34));
     drawTree(700, 320, RGB(120, 255, 34));
@@ -138,7 +148,10 @@ int main()
     int cloud1X = 600;
     int cloud2X = 1200;
     int cloud3X = 1800;
-    int humanX = 1200;
+    int humanX = 300;
+    int doorLeft = 230;
+    int doorTop = 370;
+
 
     //Самолет летит
     //while (planeX > 500)
@@ -171,7 +184,7 @@ int main()
     }
 
     //Человек идет
-    while (humanX > 300)
+    while (humanX > 230)
     {
         txBegin();
         drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
@@ -229,6 +242,56 @@ int main()
         txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
+        cloud2X -= 3;
+        cloud3X -= 2;
+        txEnd();
+    }
+
+    //Дверь открывается
+    while (doorLeft < 300)
+    {
+        txBegin();
+        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawHouse(doorLeft, doorTop);
+        drawPlane(planeX, planeY);
+        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
+        txSleep(10);
+        doorLeft += 2;
+        doorTop += 1;
+        cloud1X -= 2;
+        cloud2X -= 3;
+        cloud3X -= 2;
+        txEnd();
+    }
+
+    //Человек заходит
+    while (humanX < 250)
+    {
+        txBegin();
+        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawHouse(doorLeft, doorTop);
+        drawPlane(planeX, planeY);
+        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
+        txSleep(10);
+        humanX = humanX + 2;
+        cloud1X = cloud1X - 2;
+        cloud2X -= 3;
+        cloud3X -= 2;
+        txEnd();
+    }
+
+    //Дверь закрывается
+    while (doorLeft > 230)
+    {
+        txBegin();
+        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
+        drawHouse(doorLeft, doorTop);
+        drawPlane(planeX, planeY);
+        txSleep(10);
+        doorLeft -= 2;
+        doorTop -= 1;
+        cloud1X -= 2;
         cloud2X -= 3;
         cloud3X -= 2;
         txEnd();
