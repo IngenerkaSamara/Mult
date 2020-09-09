@@ -49,43 +49,59 @@ void drawPlane(int x, int y)
     txPolygon (rearWing, 4);
 }
 
-void drawHuman(int x, int y, int xKolena, int xLeftLeg, int xRightLeg)
+void drawHuman(int x, int y, double razm, int xKolena, int xLeftLeg, int xRightLeg)
 {
     txSetColor(TX_BLACK, 5);
     txSetFillColor(TX_WHITE);
-    txCircle(x      , y -  20, 20);
-    txLine  (x      , y,       x,         y + 65);
-    txLine  (x      , y +  10, x - 15,    y + 40);
-    txLine  (x      , y +  10, x + 15,    y + 40);
+    txCircle(x      , y -  20 * razm, 20 * razm);
+    txLine  (x      , y,              x,                y + 65 * razm);
+    txLine  (x      , y +  10 * razm, x - 15 * razm,    y + 40 * razm);
+    txLine  (x      , y +  10 * razm, x + 15 * razm,    y + 40 * razm);
 
-    txLine  (x      , y +  65, xKolena,   y + 100);
-    txLine  (xKolena, y + 100, xLeftLeg,  y + 130);
-    txLine  (x      , y +  65, xRightLeg, y + 130);
+    txLine  (x      , y +  65 * razm, xKolena,   y + 100 * razm);
+    txLine  (xKolena, y + 100 * razm, xLeftLeg,  y + 130 * razm);
+    txLine  (x      , y +  65 * razm, xRightLeg, y + 130 * razm);
 }
 
-void drawHouse(int doorLeft, int doorTop)
+void drawHouse(int x, int y, int doorLeft, int doorTop)
 {
     txSetFillColor(TX_RED);
-    txSetColor(TX_BLACK, 5);
+    txSetColor(TX_BLACK, 3);
     POINT roof[3] = {
-        { 60, 320},
-        {220, 230},
-        {340, 320}
+        {x - 140, y -  80},
+        {x +  20, y - 170},
+        {x + 160, y -  80}
     };
     txPolygon (roof, 3);
 
     txSetFillColor(TX_YELLOW);
-    txRectangle( 60, 320, 340, 520);
+    txRectangle(x - 140, y - 80, x + 160, y + 120);
+
+    int brickY = y + 120;
+    int brickX = x - 140;
+
+    while (brickY > y - 80)
+    {
+        brickX = x - 140;
+        while (brickX < x + 140)
+        {
+            txRectangle(brickX,      brickY - 20, brickX + 40, brickY);
+            txRectangle(brickX + 20, brickY - 40, brickX + 60, brickY - 20);
+            brickX += 40;
+        }
+
+        brickY -= 40;
+    }
 
     //Door
     txSetFillColor(TX_BLACK);
-    txRectangle(230, 370, 300, 520);
+    txRectangle(x + 30, y - 30, x + 100, y + 120);
     txSetFillColor(RGB(90, 56, 37));
     POINT door[4] = {
         {doorLeft, doorTop},
         {doorLeft, doorTop + 150},
-        {300, 520},
-        {300, 370}
+        {x + 100, y + 120},
+        {x + 100, y -  30}
     };
     txPolygon (door, 4);
 
@@ -93,24 +109,26 @@ void drawHouse(int doorLeft, int doorTop)
 
     //Window
     txSetFillColor(RGB(185, 255, 255));
-    txRectangle( 80, 360, 200, 450);
-    txLine     (140, 360, 140, 450);
-    txLine     (140, 400, 200, 400);
+    txRectangle(x - 120, y - 40, x,      y + 50);
+    txLine     (x -  60, y - 40, x - 60, y + 50);
+    txLine     (x -  60, y,      x,      y);
 }
 
 void drawTree(int x, int y, COLORREF color)
 {
+    int delta = random(-4, 4);
     txSetColor(TX_BLACK, 3);
     txSetFillColor(RGB(90, 56, 37));
-    txRectangle(x     , y      , x +  40, y + 250);
+    txRectangle(x     , y      , x +  20, y + 125);
     txSetFillColor(color);
-    txEllipse  (x - 70, y - 160, x + 115, y +  90);
+    txEllipse  (x - 35 + delta, y - 80,
+                x + 57 + delta, y +  23);
 
     txSetColor(TX_BLACK);
     txSetFillColor(TX_RED);
-    txCircle   (x - 40, y -  90, 10);
+    txCircle   (x - 20, y -  45, 8);
     txSetColor(TX_BLACK, 3);
-    txLine     (x - 40, y -  95, x -  40, y - 105);
+    txLine     (x - 20, y -  48, x -  20, y -  52);
 }
 
 
@@ -125,17 +143,21 @@ void drawBackground()
     txRectangle(0, 480, 1200, 700);
 }
 
-void drawBackgroundScene1(int cloud1X, int cloud2X, int cloud3X)
+void drawBackgroundScene1(int backX, int cloud1X, int cloud2X, int cloud3X)
 {
     drawBackground();
-    drawCloud(cloud1X, 150, 1.2);
-    drawCloud(cloud2X, 100, 0.8);
-    drawCloud(cloud3X, 140, 1);
+    drawCloud(cloud1X - backX, 150, 1.2);
+    drawCloud(cloud2X - backX, 100, 0.8);
+    drawCloud(cloud3X - backX, 140, 1);
 
-    drawHouse(230, 370);
-    drawTree(600, 300, RGB(80, 255, 64));
-    drawTree(790, 320, RGB(120, 255, 34));
-    drawTree(700, 320, RGB(120, 255, 34));
+    drawHouse(200 - backX, 400, 230 - backX, 370);
+
+    int treeX = 500;
+    while(treeX < 1200)
+    {
+        drawTree(treeX - backX, 400, RGB(120, 255, 34));
+        treeX += 70;
+    }
 }
 
 
@@ -143,24 +165,28 @@ int main()
 {
     txCreateWindow (1200, 700);
 
-    int planeX = 700;
-    int planeY = 50;
-    int cloud1X = 600;
-    int cloud2X = 1200;
-    int cloud3X = 1800;
+    //Переменные
+    int backX = 1200;
+
+    int planeX = 700, planeY = 50;
+    int cloud1X = 600, cloud2X = 1200, cloud3X = 1800;
+
     int humanX = 300;
-    int doorLeft = 230;
-    int doorTop = 370;
+    double humanSize = 1;
+
+    int doorLeft = 230, doorTop = 370;
+
 
 
     //Самолет летит
-    //while (planeX > 500)
+    while (backX > 0)
     {
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
         txSleep(10);
         planeX = planeX - 5;
+        backX = backX - 10;
         cloud1X = cloud1X - 2;
         cloud2X -= 3;
         cloud3X -= 2;
@@ -169,10 +195,10 @@ int main()
 
 
     //Самолет снижается
-    //while (planeX > -400)
+    while (planeX > -400)
     {
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
         txSleep(10);
         planeX = planeX - 5;
@@ -187,9 +213,9 @@ int main()
     while (humanX > 230)
     {
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
+        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
         txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
@@ -200,9 +226,9 @@ int main()
 
 
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 15, humanX - 10, humanX + 5);
+        drawHuman(humanX,       400, humanSize, humanX - 15, humanX - 10, humanX + 5);
         txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
@@ -212,9 +238,9 @@ int main()
 
 
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 10, humanX - 10, humanX + 10);
+        drawHuman(humanX,       400, humanSize, humanX - 10, humanX - 10, humanX + 10);
         txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
@@ -224,9 +250,9 @@ int main()
 
 
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 3, humanX - 3, humanX + 12);
+        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 3, humanX + 12);
         txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
@@ -236,9 +262,9 @@ int main()
 
 
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 15, humanX - 10, humanX + 5);
+        drawHuman(humanX,       400, humanSize, humanX - 15, humanX - 10, humanX + 5);
         txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
@@ -251,10 +277,10 @@ int main()
     while (doorLeft < 300)
     {
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
-        drawHouse(doorLeft, doorTop);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
+        drawHouse(200, 400, doorLeft, doorTop);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
+        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
         txSleep(10);
         doorLeft += 2;
         doorTop += 1;
@@ -268,13 +294,15 @@ int main()
     while (humanX < 250)
     {
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
-        drawHouse(doorLeft, doorTop);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
+        drawHouse(200, 400, doorLeft, doorTop);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
+        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
         txSleep(10);
+
         humanX = humanX + 2;
-        cloud1X = cloud1X - 2;
+        humanSize = humanSize * 0.985;
+        cloud1X -= 2;
         cloud2X -= 3;
         cloud3X -= 2;
         txEnd();
@@ -284,9 +312,9 @@ int main()
     while (doorLeft > 230)
     {
         txBegin();
-        drawBackgroundScene1(cloud1X, cloud2X, cloud3X);
-        drawHuman(humanX,       400, humanX - 3, humanX - 5, humanX + 5);
-        drawHouse(doorLeft, doorTop);
+        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
+        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
+        drawHouse(200, 400, doorLeft, doorTop);
         drawPlane(planeX, planeY);
         txSleep(10);
         doorLeft -= 2;
