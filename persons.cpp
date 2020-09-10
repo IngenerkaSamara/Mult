@@ -63,7 +63,7 @@ void drawHuman(int x, int y, double razm, int xKolena, int xLeftLeg, int xRightL
     txLine  (x      , y +  65 * razm, xRightLeg, y + 130 * razm);
 }
 
-void drawHouse(int x, int y, int doorLeft, int doorTop)
+void drawHouse(int x, int y, int doorLeft, int doorTop, bool haveDoor)
 {
     txSetFillColor(TX_RED);
     txSetColor(TX_BLACK, 3);
@@ -94,18 +94,21 @@ void drawHouse(int x, int y, int doorLeft, int doorTop)
     }
 
     //Door
-    txSetFillColor(TX_BLACK);
-    txRectangle(x + 30, y - 30, x + 100, y + 120);
-    txSetFillColor(RGB(90, 56, 37));
-    POINT door[4] = {
-        {doorLeft, doorTop},
-        {doorLeft, doorTop + 150},
-        {x + 100, y + 120},
-        {x + 100, y -  30}
-    };
-    txPolygon (door, 4);
+    if (haveDoor)
+    {
+        txSetFillColor(TX_BLACK);
+        txRectangle(x + 30, y - 30, x + 100, y + 120);
+        txSetFillColor(RGB(90, 56, 37));
+        POINT door[4] = {
+            {doorLeft, doorTop},
+            {doorLeft, doorTop + 150},
+            {x + 100, y + 120},
+            {x + 100, y -  30}
+        };
+        txPolygon (door, 4);
 
-    txCircle   (doorLeft  +10, doorTop + 60, 8);
+        txCircle   (doorLeft  +10, doorTop + 60, 8);
+    }
 
     //Window
     txSetFillColor(RGB(185, 255, 255));

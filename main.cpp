@@ -19,7 +19,10 @@ void drawBackgroundScene1(int backX, int cloud1X, int cloud2X, int cloud3X)
     drawCloud(cloud2X - backX, 100, 0.8);
     drawCloud(cloud3X - backX, 140, 1);
 
-    drawHouse(200 - backX, 400, 230 - backX, 370);
+    drawHouse(200 - backX, 400, 230 - backX, 370, true);
+    drawHouse(200 - backX, 200, 230 - backX, 170, false);
+    drawHouse(-100 - backX, 400, -70 - backX, 370, true);
+    drawHouse(-100 - backX, 200, -70 - backX, 170, false);
 
     int treeX = 500;
     while(treeX < 1200)
@@ -105,62 +108,28 @@ int main()
     }
 
     //Человек идет
+    int kadr = 1;
     while (humanX > 230)
     {
         txBegin();
         drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
+        if (kadr == 1)
+            drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
+        else if (kadr == 2)
+            drawHuman(humanX,       400, humanSize, humanX - 15, humanX - 10, humanX + 5);
+        else if (kadr == 3)
+            drawHuman(humanX,       400, humanSize, humanX - 10, humanX - 10, humanX + 10);
+        else if (kadr == 4)
+            drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 3, humanX + 12);
+        else
+            drawHuman(humanX,       400, humanSize, humanX - 15, humanX - 10, humanX + 5);
+
         txSleep(10);
-        humanX = humanX - 5;
-        cloud1X = cloud1X - 2;
-        cloud2X -= 3;
-        cloud3X -= 2;
-        txEnd();
+        kadr += 1;
+        if (kadr > 5)
+            kadr = 1;
 
-
-
-        txBegin();
-        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
-        drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanSize, humanX - 15, humanX - 10, humanX + 5);
-        txSleep(10);
-        humanX = humanX - 5;
-        cloud1X = cloud1X - 2;
-        cloud2X -= 3;
-        cloud3X -= 2;
-        txEnd();
-
-
-        txBegin();
-        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
-        drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanSize, humanX - 10, humanX - 10, humanX + 10);
-        txSleep(10);
-        humanX = humanX - 5;
-        cloud1X = cloud1X - 2;
-        cloud2X -= 3;
-        cloud3X -= 2;
-        txEnd();
-
-
-        txBegin();
-        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
-        drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 3, humanX + 12);
-        txSleep(10);
-        humanX = humanX - 5;
-        cloud1X = cloud1X - 2;
-        cloud2X -= 3;
-        cloud3X -= 2;
-        txEnd();
-
-
-        txBegin();
-        drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
-        drawPlane(planeX, planeY);
-        drawHuman(humanX,       400, humanSize, humanX - 15, humanX - 10, humanX + 5);
-        txSleep(10);
         humanX = humanX - 5;
         cloud1X = cloud1X - 2;
         cloud2X -= 3;
@@ -173,7 +142,7 @@ int main()
     {
         txBegin();
         drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
-        drawHouse(200, 400, doorLeft, doorTop);
+        drawHouse(200, 400, doorLeft, doorTop, true);
         drawPlane(planeX, planeY);
         drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
         txSleep(10);
@@ -190,7 +159,7 @@ int main()
     {
         txBegin();
         drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
-        drawHouse(200, 400, doorLeft, doorTop);
+        drawHouse(200, 400, doorLeft, doorTop, true);
         drawPlane(planeX, planeY);
         drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
 
@@ -216,7 +185,7 @@ int main()
         txBegin();
         drawBackgroundScene1(backX, cloud1X, cloud2X, cloud3X);
         drawHuman(humanX,       400, humanSize, humanX - 3, humanX - 5, humanX + 5);
-        drawHouse(200, 400, doorLeft, doorTop);
+        drawHouse(200, 400, doorLeft, doorTop, true);
         drawPlane(planeX, planeY);
         txSleep(10);
         doorLeft -= 2;
